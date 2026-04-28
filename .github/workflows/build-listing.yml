@@ -48,18 +48,24 @@ jobs:
                 assets: [.assets[] | {name: .name, url: .url, browser_download_url: .browser_download_url}]
               }]' 2>/dev/null || echo '[]')
 
+            echo "  Releases found: $(echo "$RELEASES" | jq 'length')"
+
             VERSIONS="{}"
             while IFS= read -r release; do
               [ -z "$release" ] && continue
               TAG=$(echo "$release" | jq -r '.tag')
               VERSION="${TAG#v}"
-              ASSET=$(echo "$release" | jq -r --arg pkg "$PKG_NAME" \
+              echo "  Processing tag: ${TAG}"
+              ASSET=$(echo "$release" | jq --arg pkg "$PKG_NAME" \
                 '.assets[] | select(.name | contains($pkg))')
               API_URL=$(echo "$ASSET" | jq -r '.url // empty')
               ZIP_URL=$(echo "$ASSET" | jq -r '.browser_download_url // empty')
+              echo "  API_URL: ${API_URL}"
+              echo "  ZIP_URL: ${ZIP_URL}"
 
               if [ -n "$API_URL" ] && [ "$API_URL" != "null" ]; then
-                gh api "$API_URL" -H "Accept: application/octet-stream" > temp.zip 2>/dev/null
+                gh api "$API_URL" -H "Accept: application/octet-stream" > temp.zip 2>&1 || echo "  Download failed"
+                echo "  Downloaded size: $(wc -c < temp.zip) bytes"
                 SHA256=$(sha256sum temp.zip | cut -d' ' -f1)
 
                 PKG_JSON=$(unzip -p temp.zip package.json 2>/dev/null || echo '')
