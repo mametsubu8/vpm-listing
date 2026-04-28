@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>mametsubu - VPM Repository</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 640px;
+            margin: 60px auto;
+            padding: 0 20px;
+            color: #333;
+        }
+        h1 { text-align: center; font-size: 1.5rem; }
+        .subtitle { text-align: center; color: #666; margin-bottom: 32px; }
+        .btn-wrap { text-align: center; margin: 24px 0; }
+        .btn {
+            display: inline-block;
+            padding: 12px 32px;
+            background: #1a73e8;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+        .btn:hover { background: #1557b0; }
+        .url-box { text-align: center; margin: 16px 0 32px; }
+        code {
+            background: #f1f3f4;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 0.9rem;
+        }
+        .packages { list-style: none; padding: 0; }
+        .packages li {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        .packages li strong { display: block; margin-bottom: 4px; }
+        .packages li p { margin: 0; color: #666; font-size: 0.9rem; }
+        .packages li a { font-size: 0.85rem; }
+        footer { text-align: center; margin-top: 40px; color: #999; font-size: 0.85rem; }
+    </style>
+</head>
+<body>
+    <h1>mametsubu</h1>
+    <p class="subtitle">VRChat / Unity 向けツール</p>
+    <div class="btn-wrap">
+        <a class="btn" href="vcc://vpm/addRepo?url=https://mametsubu8.github.io/vpm-listing/vpm.json">Add to VCC</a>
+    </div>
+    <div class="url-box">
+        <p>または VCC の Settings &gt; Packages &gt; Add Repository から以下のURLを追加:</p>
+        <p><code>https://mametsubu8.github.io/vpm-listing/vpm.json</code></p>
+    </div>
+    <h2>Packages</h2>
+    <ul class="packages">
+        <li>
+            <strong>AnimatorController Context</strong>
+            <p>AnimatorControllerの構造とAnimationClipの内容をテキスト形式に双方向変換するUnity Editorツール</p>
+            <a href="https://github.com/mametsubu8/AnimatorController_Context">GitHub</a>
+        </li>
+        <li>
+            <strong>AnimatorController MA Context</strong>
+            <p>VRChatアバターの構成（AnimatorController・Modular Avatar・VRCコンポーネント）をAI向けテキスト形式に一括シリアライズ</p>
+            <a href="https://github.com/mametsubu8/AnimatorController_MA_Context">GitHub</a>
+        </li>
+    </ul>
+    <footer>
+        <a href="https://github.com/mametsubu8">GitHub: mametsubu8</a>
+    </footer>
+</body>
+</html>

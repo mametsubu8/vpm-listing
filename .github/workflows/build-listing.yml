@@ -1,0 +1,105 @@
+name: Build VPM Listing
+
+on:
+  workflow_dispatch:
+  repository_dispatch:
+    types: [package-released]
+  schedule:
+    - cron: '0 */6 * * *'
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+env:
+  PACKAGES: >-
+    mametsubu8/AnimatorController_Context:com.mame8.animator-controller-context
+    mametsubu8/AnimatorController_MA_Context:com.mame8.animator-controller-ma-context
+
+jobs:
+  build-listing:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build VPM listing
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          LISTING=$(cat source.json)
+
+          for ENTRY in $PACKAGES; do
+            REPO="${ENTRY%%:*}"
+            PKG_NAME="${ENTRY##*:}"
+
+            echo "=== Processing ${REPO} (${PKG_NAME}) ==="
+
+            RELEASES=$(gh api "repos/${REPO}/releases" --jq '
+              [.[] | select(.draft == false) | {
+                tag: .tag_name,
+                assets: [.assets[] | {name: .name, url: .browser_download_url}]
+              }]' 2>/dev/null || echo '[]')
+
+            VERSIONS="{}"
+            while IFS= read -r release; do
+              [ -z "$release" ] && continue
+              TAG=$(echo "$release" | jq -r '.tag')
+              VERSION="${TAG#v}"
+              ZIP_URL=$(echo "$release" | jq -r --arg pkg "$PKG_NAME" \
+                '.assets[] | select(.name | contains($pkg)) | .url')
+
+              if [ -n "$ZIP_URL" ] && [ "$ZIP_URL" != "null" ]; then
+                curl -sL "$ZIP_URL" -o temp.zip
+                SHA256=$(sha256sum temp.zip | cut -d' ' -f1)
+
+                PKG_JSON=$(unzip -p temp.zip package.json 2>/dev/null || echo '')
+                if [ -z "$PKG_JSON" ]; then
+                  echo "  Warning: no package.json in zip for ${TAG}, skipping"
+                  rm -f temp.zip
+                  continue
+                fi
+                rm -f temp.zip
+
+                VERSION_ENTRY=$(echo "$PKG_JSON" | jq \
+                  --arg url "$ZIP_URL" \
+                  --arg sha "$SHA256" \
+                  '. + {url: $url, zipSHA256: $sha}')
+
+                VERSIONS=$(echo "$VERSIONS" | jq \
+                  --arg ver "$VERSION" \
+                  --argjson entry "$VERSION_ENTRY" \
+                  '. + {($ver): $entry}')
+
+                echo "  Added ${PKG_NAME}@${VERSION}"
+              fi
+            done < <(echo "$RELEASES" | jq -c '.[]')
+
+            LISTING=$(echo "$LISTING" | jq \
+              --arg pkg "$PKG_NAME" \
+              --argjson versions "$VERSIONS" \
+              '.packages[$pkg].versions = $versions')
+          done
+
+          mkdir -p _site
+          cp index.html _site/
+          echo "$LISTING" | jq '.' > _site/vpm.json
+
+          echo "=== Final vpm.json ==="
+          jq '.' _site/vpm.json
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

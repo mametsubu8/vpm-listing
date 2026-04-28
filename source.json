@@ -1,0 +1,14 @@
+{
+  "name": "mametsubu",
+  "id": "com.mame8.vpm",
+  "url": "https://mametsubu8.github.io/vpm-listing/vpm.json",
+  "author": "mame8",
+  "packages": {
+    "com.mame8.animator-controller-context": {
+      "versions": {}
+    },
+    "com.mame8.animator-controller-ma-context": {
+      "versions": {}
+    }
+  }
+}
