@@ -45,7 +45,7 @@ jobs:
             RELEASES=$(gh api "repos/${REPO}/releases" 2>/dev/null | jq '
               [.[] | select(.draft == false) | {
                 tag: .tag_name,
-                assets: [.assets[] | {name: .name, url: .browser_download_url}]
+                assets: [.assets[] | {name: .name, url: .url, browser_download_url: .browser_download_url}]
               }]' 2>/dev/null || echo '[]')
 
             VERSIONS="{}"
@@ -53,11 +53,13 @@ jobs:
               [ -z "$release" ] && continue
               TAG=$(echo "$release" | jq -r '.tag')
               VERSION="${TAG#v}"
-              ZIP_URL=$(echo "$release" | jq -r --arg pkg "$PKG_NAME" \
-                '.assets[] | select(.name | contains($pkg)) | .url')
+              ASSET=$(echo "$release" | jq -r --arg pkg "$PKG_NAME" \
+                '.assets[] | select(.name | contains($pkg))')
+              API_URL=$(echo "$ASSET" | jq -r '.url // empty')
+              ZIP_URL=$(echo "$ASSET" | jq -r '.browser_download_url // empty')
 
-              if [ -n "$ZIP_URL" ] && [ "$ZIP_URL" != "null" ]; then
-                curl -sL "$ZIP_URL" -o temp.zip
+              if [ -n "$API_URL" ] && [ "$API_URL" != "null" ]; then
+                gh api "$API_URL" -H "Accept: application/octet-stream" > temp.zip 2>/dev/null
                 SHA256=$(sha256sum temp.zip | cut -d' ' -f1)
 
                 PKG_JSON=$(unzip -p temp.zip package.json 2>/dev/null || echo '')
