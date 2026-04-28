@@ -42,7 +42,7 @@ jobs:
 
             echo "=== Processing ${REPO} (${PKG_NAME}) ==="
 
-            RELEASES=$(gh api "repos/${REPO}/releases" --jq '
+            RELEASES=$(gh api "repos/${REPO}/releases" 2>/dev/null | jq '
               [.[] | select(.draft == false) | {
                 tag: .tag_name,
                 assets: [.assets[] | {name: .name, url: .browser_download_url}]
