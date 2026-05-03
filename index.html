@@ -42,12 +42,39 @@
         .packages li strong { display: block; margin-bottom: 4px; }
         .packages li p { margin: 0; color: #666; font-size: 0.9rem; }
         .packages li a { font-size: 0.85rem; }
+        .badge {
+            display: inline-block;
+            font-size: 0.7rem;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 4px;
+            vertical-align: middle;
+            margin-left: 6px;
+        }
+        .badge-alpha {
+            background: #fff3e0;
+            color: #e65100;
+            border: 1px solid #ffcc80;
+        }
+        .notice {
+            background: #fff8e1;
+            border: 1px solid #ffe082;
+            border-radius: 6px;
+            padding: 12px 16px;
+            margin-bottom: 24px;
+            font-size: 0.85rem;
+            color: #6d4c00;
+            text-align: center;
+        }
         footer { text-align: center; margin-top: 40px; color: #999; font-size: 0.85rem; }
     </style>
 </head>
 <body>
     <h1>mametsubu</h1>
     <p class="subtitle">VRChat / Unity 向けツール</p>
+    <div class="notice">
+        収録パッケージはすべて開発中 (Alpha) です。仕様やAPIが予告なく変更される可能性があります。
+    </div>
     <div class="btn-wrap">
         <a class="btn" href="vcc://vpm/addRepo?url=https://mametsubu8.github.io/vpm-listing/vpm.json">Add to VCC</a>
     </div>
@@ -58,12 +85,17 @@
     <h2>Packages</h2>
     <ul class="packages">
         <li>
-            <strong>AnimatorController Context</strong>
+            <strong>Emotion System <span class="badge badge-alpha">Alpha</span></strong>
+            <p>VRChatアバターに副感情レイヤーを追加するプラットフォームギミック。Gestureベースの表情を変えずに、副感情に応じたボディランゲージを自動変化。</p>
+            <a href="https://github.com/mametsubu8/Emotion_System">GitHub</a>
+        </li>
+        <li>
+            <strong>AnimatorController Context <span class="badge badge-alpha">Alpha</span></strong>
             <p>AnimatorControllerの構造とAnimationClipの内容をテキスト形式に双方向変換するUnity Editorツール</p>
             <a href="https://github.com/mametsubu8/AnimatorController_Context">GitHub</a>
         </li>
         <li>
-            <strong>AnimatorController MA Context</strong>
+            <strong>AnimatorController MA Context <span class="badge badge-alpha">Alpha</span></strong>
             <p>VRChatアバターの構成（AnimatorController・Modular Avatar・VRCコンポーネント）をAI向けテキスト形式に一括シリアライズ</p>
             <a href="https://github.com/mametsubu8/AnimatorController_MA_Context">GitHub</a>
         </li>
