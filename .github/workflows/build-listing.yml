@@ -20,6 +20,7 @@ env:
   PACKAGES: >-
     mametsubu8/AnimatorController_Context:com.mame8.animator-controller-context
     mametsubu8/AnimatorController_MA_Context:com.mame8.animator-controller-ma-context
+    mametsubu8/Emotion_System:com.mametsubu.emotion-system
 
 jobs:
   build-listing:
